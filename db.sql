@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.5.5-10.1.30-MariaDB)
 # Database: test3
-# Generation Time: 2018-04-30 07:44:42 +0000
+# Generation Time: 2018-05-01 20:53:05 +0000
 # ************************************************************
 
 
@@ -61,7 +61,9 @@ LOCK TABLES `authors` WRITE;
 INSERT INTO `authors` (`id`, `name`)
 VALUES
 	(1,'J. K. Rowling'),
-	(2,'Enid Blyton');
+	(2,'Enid Blyton'),
+	(3,'Jaqueline Wilson'),
+	(4,'J. R. R. Tolkien ');
 
 /*!40000 ALTER TABLE `authors` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -78,7 +80,7 @@ CREATE TABLE `books` (
   `title` varchar(255) NOT NULL,
   `publisher` varchar(50) NOT NULL,
   `year` int(11) NOT NULL,
-  `age_restriction` varchar(30) NOT NULL,
+  `age_restriction` tinyint(4) NOT NULL,
   `is_lost` tinyint(4) NOT NULL,
   `is_reference` tinyint(4) NOT NULL,
   `edition` varchar(30) NOT NULL,
@@ -101,7 +103,11 @@ LOCK TABLES `books` WRITE;
 
 INSERT INTO `books` (`id`, `isbn`, `title`, `publisher`, `year`, `age_restriction`, `is_lost`, `is_reference`, `edition`, `is_out_for_repair`, `original_price`, `accessibility_options_id`, `genre_id`, `reader_level_id`)
 VALUES
-	(1,'ASD','ASD','ASD',2018,'18',0,0,'1',0,25.00,NULL,1,1);
+	(1,'9781408855652 ','\nHarry Potter and the Philosopher\'s Stone','Bloomsbury Publishing PLC',2014,0,0,1,'Illustrated',0,9.35,1,4,3),
+	(2,'9780340681060','Famous Five: Five On A Treasure Island',' Hachette Children\'s Group ',1997,0,0,0,'2nd edition',0,5.49,1,3,2),
+	(3,'9780552554435','My Sister Jodie','Random House Children\'s Publishers UK ',2009,0,0,0,'2nd edition',0,5.49,1,3,3),
+	(4,'9780261103207 ','The Fellowship of The Ring: The Lord of The Rings','HarperCollins Publishers',1994,1,0,1,'4th edition',0,35.00,2,1,4),
+	(29,'9780261103580','The Two Towers - The Lord of the Rings 2 ','HarperCollins Publishers ',2011,0,0,0,'6th edition',0,0.00,2,1,4);
 
 /*!40000 ALTER TABLE `books` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -128,7 +134,10 @@ LOCK TABLES `books_authors` WRITE;
 
 INSERT INTO `books_authors` (`id`, `books_id`, `author_id`)
 VALUES
-	(1,1,1);
+	(1,1,1),
+	(2,2,2),
+	(3,3,3),
+	(4,4,4);
 
 /*!40000 ALTER TABLE `books_authors` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -208,10 +217,20 @@ DROP TABLE IF EXISTS `costs`;
 
 CREATE TABLE `costs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `charges` decimal(10,0) NOT NULL,
+  `description` varchar(50) NOT NULL DEFAULT '',
+  `amount` decimal(8,2) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+LOCK TABLES `costs` WRITE;
+/*!40000 ALTER TABLE `costs` DISABLE KEYS */;
+
+INSERT INTO `costs` (`id`, `description`, `amount`)
+VALUES
+	(1,'book_fine',0.20);
+
+/*!40000 ALTER TABLE `costs` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table genres
@@ -255,6 +274,17 @@ CREATE TABLE `librarians` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+LOCK TABLES `librarians` WRITE;
+/*!40000 ALTER TABLE `librarians` DISABLE KEYS */;
+
+INSERT INTO `librarians` (`id`, `employee_no`, `username`, `password`, `first_name`, `last_name`, `email`)
+VALUES
+	(1,23145,'krahman','5103a','Khadija','Rahman','kabdu025@gold.ac.uk'),
+	(2,23146,'ichiS','5103b','Ichi','S','ichisichimura@gmail.com\n'),
+	(3,23147,'VivHughes','5103c','Vivienne','H','vivienne.c.hughes@gmail.com');
+
+/*!40000 ALTER TABLE `librarians` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table reader_levels
@@ -273,7 +303,10 @@ LOCK TABLES `reader_levels` WRITE;
 
 INSERT INTO `reader_levels` (`id`, `name`)
 VALUES
-	(1,'Beginner');
+	(1,'Early_learner'),
+	(2,'Beginner_reader'),
+	(3,'Young_adult'),
+	(4,'Adult');
 
 /*!40000 ALTER TABLE `reader_levels` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -287,10 +320,22 @@ DROP TABLE IF EXISTS `service_charges`;
 CREATE TABLE `service_charges` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `service_name` varchar(30) NOT NULL,
-  `price` decimal(10,0) NOT NULL,
+  `price` decimal(8,2) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+LOCK TABLES `service_charges` WRITE;
+/*!40000 ALTER TABLE `service_charges` DISABLE KEYS */;
+
+INSERT INTO `service_charges` (`id`, `service_name`, `price`)
+VALUES
+	(1,'b&w printing',0.20),
+	(2,'b&wcopying ',0.20),
+	(3,'colour printing',1.00),
+	(4,'colour copying',1.00);
+
+/*!40000 ALTER TABLE `service_charges` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table service_transactions
